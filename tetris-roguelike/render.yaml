@@ -1,0 +1,11 @@
+services:
+  - type: web
+    runtime: node
+    name: tetris-roguelike
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    rootDir: tetris-roguelike
+    envVars:
+      - key: NODE_ENV
+        value: production
