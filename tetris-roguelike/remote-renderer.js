@@ -2,10 +2,10 @@
 // 模拟 TetrisGame 的只读接口，供 GameRenderer 渲染远程玩家的棋盘
 
 class RemoteGameProxy {
-    constructor() {
+    constructor(cellSize) {
         this.cols = 10;
         this.rows = 20;
-        this.cellSize = 28;
+        this.cellSize = cellSize || 28;
         this.board = this._emptyBoard();
         this.current = null;
         this.ghostY = 0;

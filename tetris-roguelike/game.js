@@ -12,10 +12,10 @@ const PIECE_TYPES = {
 
 const PIECE_NAMES = Object.keys(PIECE_TYPES);
 class TetrisGame {
-    constructor() {
+    constructor(cellSize) {
         this.baseCols = 10;
         this.baseRows = 20;
-        this.cellSize = 28;
+        this.cellSize = cellSize || 28;
         this.reset();
     }
 

@@ -609,3 +609,343 @@ div[id^="ol-active-traits"] {
     border-color: #00ff88;
     color: #00ff88;
 }
+
+/* ===== 手机端 H5 适配 ===== */
+@media (max-width: 768px) {
+    /* --- 全局 --- */
+    body {
+        touch-action: manipulation;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+        align-items: flex-start;
+        padding-top: env(safe-area-inset-top);
+        overflow-y: auto;
+    }
+    canvas {
+        touch-action: none;
+    }
+
+    /* --- 主菜单 --- */
+    #start-screen h1 {
+        font-size: 2rem;
+        letter-spacing: 0.3rem;
+    }
+    .subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+    }
+    .mode-buttons {
+        flex-direction: column;
+        width: 80%;
+        max-width: 280px;
+        gap: 12px;
+    }
+    .mode-buttons .btn-primary {
+        width: 100%;
+        padding: 14px 20px;
+    }
+    #btn-start-pk {
+        display: none !important;
+    }
+    .controls-hint {
+        display: none;
+    }
+
+    /* --- 单人游戏布局 --- */
+    .game-layout {
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+        padding: 4px 8px;
+    }
+    .left-panel {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: center;
+        order: 0;
+    }
+    .game-main {
+        order: 1;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+    .right-panel {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: center;
+        order: 2;
+    }
+    .side-panel .panel-box {
+        flex: 1;
+        min-width: 60px;
+        padding: 5px;
+    }
+    .side-panel .panel-box h3 {
+        font-size: 0.55rem;
+        margin-bottom: 3px;
+    }
+    .stat-value {
+        font-size: 0.95rem;
+    }
+    #hold-canvas,
+    canvas[id^="pk-hold-canvas"],
+    canvas[id^="ol-hold-canvas"] {
+        width: 45px;
+        height: 45px;
+    }
+    .next-canvas {
+        width: 45px;
+        height: 45px;
+        margin-bottom: 2px;
+    }
+    #active-traits,
+    div[id^="pk-active-traits"],
+    div[id^="ol-active-traits"] {
+        flex-direction: row;
+        flex-wrap: wrap;
+        max-height: 40px;
+        overflow: hidden;
+    }
+    .active-trait-tag {
+        font-size: 0.6rem;
+        padding: 2px 4px;
+    }
+    .progress-bar {
+        height: 4px;
+    }
+    .progress-box div[id$="-text"],
+    #trait-progress-text {
+        font-size: 0.6rem;
+        margin-top: 2px;
+    }
+
+    /* --- 在线大厅（弹窗模式） --- */
+    #online-lobby-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.92);
+        z-index: 100;
+        padding: 40px 16px 24px;
+        overflow-y: auto;
+        justify-content: flex-start;
+    }
+    .lobby-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .lobby-options {
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        max-width: 300px;
+    }
+    .lobby-section {
+        min-width: unset;
+        width: 100%;
+    }
+    .lobby-divider {
+        text-align: center;
+    }
+    .code-input {
+        width: 100%;
+        max-width: 240px;
+    }
+    .room-code-text {
+        font-size: 1.8rem;
+        letter-spacing: 0.5rem;
+        padding: 8px 12px;
+    }
+
+    /* --- 在线对战：画中画对手 --- */
+    #online-game-screen .pk-layout {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 4px;
+    }
+    #online-game-screen .pk-vs {
+        display: none;
+    }
+    /* 本地玩家：全宽 */
+    #online-game-screen .pk-player.p1 {
+        width: 100%;
+    }
+    #online-game-screen .pk-player.p1 .pk-player-label {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+    }
+    #online-game-screen .pk-player.p1 .pk-player-content {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    #online-game-screen .pk-player.p1 .pk-side {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: center;
+    }
+    #online-game-screen .pk-player.p1 .pk-side .panel-box {
+        flex: 1;
+        min-width: 60px;
+        padding: 5px;
+    }
+    #online-game-screen .pk-player.p1 .pk-traits-panel {
+        width: 100%;
+    }
+    /* 对手：右上角小窗 */
+    #online-game-screen .pk-player.p2 {
+        position: fixed;
+        top: 4px;
+        right: 4px;
+        width: 110px;
+        z-index: 150;
+        background: rgba(13, 13, 20, 0.92);
+        border: 1px solid #333;
+        border-radius: 4px;
+        padding: 4px;
+    }
+    #online-game-screen .pk-player.p2 .pk-player-label {
+        font-size: 0.6rem;
+        margin-bottom: 2px;
+    }
+    #online-game-screen .pk-player.p2 .pk-side,
+    #online-game-screen .pk-player.p2 .pk-traits-panel {
+        display: none;
+    }
+    #online-game-screen .pk-player.p2 .pk-player-content {
+        justify-content: center;
+    }
+    #online-game-screen .pk-player.p2 .pk-board canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    /* --- 词条选择 --- */
+    .trait-choices {
+        flex-direction: column;
+        gap: 10px;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    .trait-card {
+        width: 85vw;
+        max-width: 300px;
+        padding: 14px 12px;
+    }
+    .trait-card .trait-icon { font-size: 1.6rem; margin-bottom: 6px; }
+    .trait-card .trait-name { font-size: 0.9rem; margin-bottom: 6px; }
+    .trait-card .trait-desc { font-size: 0.7rem; }
+    .pk-player-trait-modal .trait-card { width: 80vw; max-width: 280px; }
+
+    /* --- 游戏结束弹窗 --- */
+    .gameover-modal {
+        min-width: unset;
+        width: 90vw;
+        max-width: 360px;
+        padding: 20px 16px;
+    }
+    .gameover-modal h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .pk-gameover-modal {
+        min-width: unset;
+        width: 90vw;
+        max-width: 400px;
+    }
+    .pk-gameover-modal h2 {
+        font-size: 1.8rem;
+    }
+    .pk-final-stats {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .pk-gameover-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* --- 暂停弹窗 --- */
+    .pause-modal h2 {
+        font-size: 1.5rem;
+    }
+
+    /* --- 触控按钮 --- */
+    #touch-controls {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 6px 12px;
+        padding-bottom: calc(6px + env(safe-area-inset-bottom));
+        background: rgba(10, 10, 15, 0.95);
+        z-index: 200;
+        gap: 5px;
+    }
+    .touch-row {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+    .touch-btn {
+        flex: 1;
+        max-width: 80px;
+        height: 48px;
+        background: #1a1a24;
+        border: 1px solid #333;
+        color: #00ff88;
+        font-size: 1.1rem;
+        font-family: 'Courier New', monospace;
+        border-radius: 6px;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        touch-action: manipulation;
+        cursor: pointer;
+    }
+    .touch-btn:active {
+        background: rgba(0, 255, 136, 0.15);
+        border-color: #00ff88;
+    }
+    .touch-btn-accent {
+        background: rgba(0, 255, 136, 0.08);
+        border-color: #00ff88;
+    }
+    .touch-btn-small {
+        max-width: 50px;
+    }
+}
+
+/* 横屏提醒 */
+@media (max-width: 768px) and (orientation: landscape) {
+    body::after {
+        content: '请旋转手机至竖屏模式';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        color: #00ff88;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        font-family: 'Courier New', monospace;
+        z-index: 9999;
+        letter-spacing: 0.2rem;
+    }
+}

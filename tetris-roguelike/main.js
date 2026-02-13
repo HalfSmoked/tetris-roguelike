@@ -16,6 +16,43 @@ let remoteTraits = []; // trait names received from opponent
 let lastTime = 0;
 let animationId = null;
 
+// Mobile detection
+const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+    || (window.innerWidth <= 768 && 'ontouchstart' in window);
+let touchControls = null;
+
+function getMobileCellSize(cols, rows) {
+    if (!isMobile) return 28;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const availWidth = vw - 16;
+    const availHeight = vh * 0.55; // reserve space for top info + bottom touch controls
+    return Math.max(14, Math.min(Math.floor(availWidth / cols), Math.floor(availHeight / rows)));
+}
+
+function cleanupTouchControls() {
+    if (touchControls) { touchControls.destroy(); touchControls = null; }
+}
+
+function initTouchControls(g, ts, pauseFn) {
+    cleanupTouchControls();
+    touchControls = new TouchControls({
+        moveLeft:  () => { if (!g.paused && !g.traitPending) g.move(-1); },
+        moveRight: () => { if (!g.paused && !g.traitPending) g.move(1); },
+        rotate:    () => { if (!g.paused && !g.traitPending) g.rotate(1); },
+        softDrop:  () => { if (!g.paused && !g.traitPending) g.softDrop(); },
+        hardDrop:  () => { if (!g.paused && !g.traitPending) g.hardDrop(); },
+        hold:      () => {
+            if (!g.paused && !g.traitPending) {
+                g.hold();
+                const ht = ts.activeTraits.find(t => t.id === 'hold_master');
+                if (ht && ht.modifyHold) ht.modifyHold(g);
+            }
+        },
+        pause: pauseFn
+    });
+}
+
 // Key state tracking
 const keyRepeatDelay = 170;
 const keyRepeatRate = 50;
@@ -48,6 +85,7 @@ function init() {
     document.getElementById('btn-pk-restart').addEventListener('click', () => startPKGame());
     document.getElementById('btn-back-menu').addEventListener('click', () => {
         if (animationId) cancelAnimationFrame(animationId);
+        cleanupTouchControls();
         ui.hideAllOverlays();
         ui.showScreen('start');
     });
@@ -60,17 +98,23 @@ function init() {
     });
     document.getElementById('btn-lobby-back').addEventListener('click', () => {
         if (networkManager) networkManager.disconnect();
-        ui.showScreen('start');
+        if (isMobile) {
+            document.getElementById('online-lobby-screen').classList.add('hidden');
+        } else {
+            ui.showScreen('start');
+        }
     });
     document.getElementById('btn-ol-back-menu').addEventListener('click', () => {
         if (networkManager) networkManager.disconnect();
         if (animationId) cancelAnimationFrame(animationId);
+        cleanupTouchControls();
         ui.hideAllOverlays();
         ui.showScreen('start');
     });
     document.getElementById('btn-ol-disconnect-back').addEventListener('click', () => {
         if (networkManager) networkManager.disconnect();
         if (animationId) cancelAnimationFrame(animationId);
+        cleanupTouchControls();
         ui.hideAllOverlays();
         ui.showScreen('start');
     });
@@ -91,7 +135,8 @@ function init() {
 // ===================== SINGLE PLAYER =====================
 
 function startSingleGame() {
-    game = new TetrisGame();
+    const cs = getMobileCellSize(10, 20);
+    game = new TetrisGame(cs);
     traitSystem = new TraitSystem();
 
     game.onTraitReady = showTraitSelection;
@@ -105,6 +150,8 @@ function startSingleGame() {
 
     renderer = new GameRenderer(game);
     renderer.render();
+
+    if (isMobile) initTouchControls(game, traitSystem, togglePause);
 
     lastTime = performance.now();
     if (animationId) cancelAnimationFrame(animationId);
@@ -491,7 +538,12 @@ function getServerUrl() {
 }
 
 function showOnlineLobby() {
-    ui.showScreen('online-lobby');
+    if (isMobile) {
+        // Show as modal overlay on top of start screen
+        document.getElementById('online-lobby-screen').classList.remove('hidden');
+    } else {
+        ui.showScreen('online-lobby');
+    }
     ui.hideLobbyStatus();
     document.getElementById('room-code-display').classList.add('hidden');
     document.getElementById('join-code-input').value = '';
@@ -578,7 +630,8 @@ function setupNetworkCallbacks() {
 }
 
 function startOnlineGame() {
-    localGame = new TetrisGame();
+    const cs = getMobileCellSize(10, 20);
+    localGame = new TetrisGame(cs);
     localTraitSystem = new TraitSystem();
     remoteProxy = new RemoteGameProxy();
     remoteTraits = [];
@@ -647,6 +700,8 @@ function startOnlineGame() {
 
     localRenderer.render();
     remoteRenderer.render();
+
+    if (isMobile) initTouchControls(localGame, localTraitSystem, toggleOnlinePause);
 
     // Start syncing local state to opponent
     networkManager.startStateSync(localGame);
