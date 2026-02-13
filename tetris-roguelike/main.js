@@ -19,6 +19,7 @@ let animationId = null;
 // Key state tracking
 const keyRepeatDelay = 170;
 const keyRepeatRate = 50;
+const softDropRate = 20;
 const keys = {};
 const keyTimers = {};
 
@@ -318,12 +319,15 @@ function processSingleHeldKeys(time) {
         if (!keys[code] || !keyTimers[code]) continue;
         const timer = keyTimers[code];
         const elapsed = time - timer.start;
+        const isDown = code === 'ArrowDown';
+        const delay = isDown ? 0 : keyRepeatDelay;
+        const rate = isDown ? softDropRate : keyRepeatRate;
 
-        if (!timer.repeating && elapsed >= keyRepeatDelay) {
+        if (!timer.repeating && elapsed >= delay) {
             timer.repeating = true;
             timer.lastRepeat = time;
             executeSingleKeyAction(code);
-        } else if (timer.repeating && time - timer.lastRepeat >= keyRepeatRate) {
+        } else if (timer.repeating && time - timer.lastRepeat >= rate) {
             timer.lastRepeat = time;
             executeSingleKeyAction(code);
         }
@@ -403,12 +407,15 @@ function processPKHeldKeys(time) {
         const timer = keyTimers[code];
         const elapsed = time - timer.start;
         const action = P1_MAP[code];
+        const isSoftDrop = action === 'softDrop';
+        const delay = isSoftDrop ? 0 : keyRepeatDelay;
+        const rate = isSoftDrop ? softDropRate : keyRepeatRate;
 
-        if (!timer.repeating && elapsed >= keyRepeatDelay) {
+        if (!timer.repeating && elapsed >= delay) {
             timer.repeating = true;
             timer.lastRepeat = time;
             executePKAction(game1, traitSystem1, action);
-        } else if (timer.repeating && time - timer.lastRepeat >= keyRepeatRate) {
+        } else if (timer.repeating && time - timer.lastRepeat >= rate) {
             timer.lastRepeat = time;
             executePKAction(game1, traitSystem1, action);
         }
@@ -420,12 +427,15 @@ function processPKHeldKeys(time) {
         const timer = keyTimers[code];
         const elapsed = time - timer.start;
         const action = P2_MAP[code];
+        const isSoftDrop = action === 'softDrop';
+        const delay = isSoftDrop ? 0 : keyRepeatDelay;
+        const rate = isSoftDrop ? softDropRate : keyRepeatRate;
 
-        if (!timer.repeating && elapsed >= keyRepeatDelay) {
+        if (!timer.repeating && elapsed >= delay) {
             timer.repeating = true;
             timer.lastRepeat = time;
             executePKAction(game2, traitSystem2, action);
-        } else if (timer.repeating && time - timer.lastRepeat >= keyRepeatRate) {
+        } else if (timer.repeating && time - timer.lastRepeat >= rate) {
             timer.lastRepeat = time;
             executePKAction(game2, traitSystem2, action);
         }
@@ -737,12 +747,15 @@ function processOnlineHeldKeys(time) {
         if (!keys[code] || !keyTimers[code]) continue;
         const timer = keyTimers[code];
         const elapsed = time - timer.start;
+        const isDown = code === 'ArrowDown';
+        const delay = isDown ? 0 : keyRepeatDelay;
+        const rate = isDown ? softDropRate : keyRepeatRate;
 
-        if (!timer.repeating && elapsed >= keyRepeatDelay) {
+        if (!timer.repeating && elapsed >= delay) {
             timer.repeating = true;
             timer.lastRepeat = time;
             executeOnlineKeyAction(code);
-        } else if (timer.repeating && time - timer.lastRepeat >= keyRepeatRate) {
+        } else if (timer.repeating && time - timer.lastRepeat >= rate) {
             timer.lastRepeat = time;
             executeOnlineKeyAction(code);
         }
