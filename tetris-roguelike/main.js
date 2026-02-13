@@ -73,10 +73,16 @@ function init() {
         gameMode = 'pk';
         startPKGame();
     });
-    document.getElementById('btn-start-online').addEventListener('click', () => {
+    // Online mode: open create/join modals
+    document.getElementById('btn-open-create').addEventListener('click', () => {
         gameMode = 'online';
-        showOnlineLobby();
+        openCreateRoomModal();
     });
+    document.getElementById('btn-open-join').addEventListener('click', () => {
+        gameMode = 'online';
+        openJoinRoomModal();
+    });
+
     document.getElementById('btn-resume').addEventListener('click', resumeGame);
     document.getElementById('btn-restart').addEventListener('click', () => {
         if (gameMode === 'single') startSingleGame();
@@ -90,19 +96,19 @@ function init() {
         ui.showScreen('start');
     });
 
-    // Online lobby buttons
+    // Online modal buttons
     document.getElementById('btn-create-room').addEventListener('click', createOnlineRoom);
     document.getElementById('btn-join-room').addEventListener('click', () => {
         const code = document.getElementById('join-code-input').value;
         joinOnlineRoom(code);
     });
-    document.getElementById('btn-lobby-back').addEventListener('click', () => {
+    document.getElementById('btn-create-back').addEventListener('click', () => {
         if (networkManager) networkManager.disconnect();
-        if (isMobile) {
-            document.getElementById('online-lobby-screen').classList.add('hidden');
-        } else {
-            ui.showScreen('start');
-        }
+        ui.hideOverlay('createRoomModal');
+    });
+    document.getElementById('btn-join-back').addEventListener('click', () => {
+        if (networkManager) networkManager.disconnect();
+        ui.hideOverlay('joinRoomModal');
     });
     document.getElementById('btn-ol-back-menu').addEventListener('click', () => {
         if (networkManager) networkManager.disconnect();
@@ -537,61 +543,69 @@ function getServerUrl() {
     return wsProto + '//' + loc.host;
 }
 
-function showOnlineLobby() {
-    if (isMobile) {
-        // Show as modal overlay on top of start screen
-        document.getElementById('online-lobby-screen').classList.remove('hidden');
-    } else {
-        ui.showScreen('online-lobby');
-    }
+// Track which modal is active for status messages
+let activeModal = 'create'; // 'create' or 'join'
+
+function openCreateRoomModal() {
     ui.hideLobbyStatus();
     document.getElementById('room-code-display').classList.add('hidden');
+    document.getElementById('btn-create-room').classList.remove('hidden');
+    ui.showOverlay('createRoomModal');
+}
+
+function openJoinRoomModal() {
+    ui.hideLobbyStatus();
     document.getElementById('join-code-input').value = '';
+    ui.showOverlay('joinRoomModal');
 }
 
 async function createOnlineRoom() {
-    ui.showLobbyStatus('正在连接服务器...', '');
+    activeModal = 'create';
+    document.getElementById('btn-create-room').classList.add('hidden');
+    ui.showLobbyStatus('正在连接服务器...', '', 'create');
     try {
         networkManager = new NetworkManager();
         await networkManager.connect(getServerUrl());
         setupNetworkCallbacks();
         networkManager.createRoom();
     } catch (err) {
-        ui.showLobbyStatus('连接失败: ' + err.message, 'error');
+        document.getElementById('btn-create-room').classList.remove('hidden');
+        ui.showLobbyStatus('连接失败: ' + err.message, 'error', 'create');
     }
 }
 
 async function joinOnlineRoom(code) {
+    activeModal = 'join';
     if (!code || code.trim().length === 0) {
-        ui.showLobbyStatus('请输入房间代码', 'error');
+        ui.showLobbyStatus('请输入房间代码', 'error', 'join');
         return;
     }
-    ui.showLobbyStatus('正在连接服务器...', '');
+    ui.showLobbyStatus('正在连接服务器...', '', 'join');
     try {
         networkManager = new NetworkManager();
         await networkManager.connect(getServerUrl());
         setupNetworkCallbacks();
         networkManager.joinRoom(code.trim().toUpperCase());
     } catch (err) {
-        ui.showLobbyStatus('连接失败: ' + err.message, 'error');
+        ui.showLobbyStatus('连接失败: ' + err.message, 'error', 'join');
     }
 }
 
 function setupNetworkCallbacks() {
     networkManager.onRoomCreated = (code) => {
         ui.showRoomCode(code);
-        ui.showLobbyStatus('等待对手加入...', '');
+        ui.showLobbyStatus('等待对手加入...', '', 'create');
     };
 
     networkManager.onOpponentJoined = () => {
-        ui.showLobbyStatus('对手已加入! 准备开始...', 'success');
-        // Auto-ready after short delay
+        ui.showLobbyStatus('对手已加入! 准备开始...', 'success', activeModal);
         setTimeout(() => {
             if (networkManager) networkManager.sendReady();
         }, 500);
     };
 
     networkManager.onGameStart = () => {
+        ui.hideAllOverlays();
         startOnlineGame();
     };
 
@@ -625,7 +639,7 @@ function setupNetworkCallbacks() {
     };
 
     networkManager.onError = (message) => {
-        ui.showLobbyStatus(message, 'error');
+        ui.showLobbyStatus(message, 'error', activeModal);
     };
 }
 

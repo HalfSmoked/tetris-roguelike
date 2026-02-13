@@ -14,7 +14,8 @@
         <div class="mode-buttons">
             <button id="btn-start-single" class="btn-primary">单人模式</button>
             <button id="btn-start-pk" class="btn-primary btn-pk">本地双人</button>
-            <button id="btn-start-online" class="btn-primary btn-online">在线对战</button>
+            <button id="btn-open-create" class="btn-primary btn-online">创建房间</button>
+            <button id="btn-open-join" class="btn-primary btn-online">加入房间</button>
         </div>
         <div class="controls-hint">
             <p><strong>单人/在线:</strong> ← → 移动 · ↑ 旋转 · ↓ 硬降 · Space 硬降 · C 暂存 · P 暂停</p>
@@ -183,27 +184,33 @@
         </div>
     </div>
 
-    <!-- 在线大厅 -->
-    <div id="online-lobby-screen" class="screen hidden">
-        <h1 class="lobby-title">在线对战</h1>
-        <div class="lobby-options">
-            <div class="lobby-section">
+    <!-- 创建房间弹窗 -->
+    <div id="create-room-modal" class="overlay hidden">
+        <div class="lobby-modal">
+            <h2 class="lobby-modal-title">创建房间</h2>
+            <div id="create-room-content">
                 <button id="btn-create-room" class="btn-primary">创建房间</button>
-                <div id="room-code-display" class="hidden">
-                    <p class="lobby-label">房间代码</p>
-                    <div id="room-code" class="room-code-text"></div>
-                    <p class="lobby-hint">将此代码分享给你的朋友</p>
-                </div>
             </div>
-            <div class="lobby-divider">或</div>
-            <div class="lobby-section">
-                <p class="lobby-label">加入房间</p>
-                <input id="join-code-input" type="text" maxlength="6" placeholder="输入房间代码" class="code-input">
-                <button id="btn-join-room" class="btn-primary">加入</button>
+            <div id="room-code-display" class="hidden">
+                <p class="lobby-label">房间代码</p>
+                <div id="room-code" class="room-code-text"></div>
+                <p class="lobby-hint">将此代码分享给你的朋友</p>
             </div>
+            <div id="create-room-status" class="lobby-status hidden"></div>
+            <button id="btn-create-back" class="btn-secondary" style="margin-top: 16px;">取消</button>
         </div>
-        <div id="lobby-status" class="lobby-status hidden"></div>
-        <button id="btn-lobby-back" class="btn-secondary" style="margin-top: 24px;">返回主菜单</button>
+    </div>
+
+    <!-- 加入房间弹窗 -->
+    <div id="join-room-modal" class="overlay hidden">
+        <div class="lobby-modal">
+            <h2 class="lobby-modal-title">加入房间</h2>
+            <p class="lobby-label">输入对战码</p>
+            <input id="join-code-input" type="text" maxlength="6" placeholder="输入房间代码" class="code-input">
+            <button id="btn-join-room" class="btn-primary" style="margin-top: 12px;">加入</button>
+            <div id="join-room-status" class="lobby-status hidden"></div>
+            <button id="btn-join-back" class="btn-secondary" style="margin-top: 16px;">取消</button>
+        </div>
     </div>
 
     <!-- 在线游戏界面 -->

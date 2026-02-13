@@ -521,42 +521,32 @@ div[id^="ol-active-traits"] {
     justify-content: center;
 }
 
-/* ==== Online Lobby ==== */
-.lobby-title {
-    font-size: 2rem;
+/* ==== Online Room Modals ==== */
+.lobby-modal {
+    text-align: center;
+    min-width: 300px;
+    max-width: 400px;
+    padding: 24px;
+}
+
+.lobby-modal-title {
+    font-size: 1.5rem;
     color: #aa44ff;
     text-shadow: 0 0 20px rgba(170, 68, 255, 0.3);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     letter-spacing: 0.3rem;
-}
-
-.lobby-options {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-.lobby-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    min-width: 200px;
-}
-
-.lobby-divider {
-    color: #444;
-    font-size: 1.2rem;
 }
 
 .lobby-label {
     color: #888;
     font-size: 0.85rem;
+    margin-bottom: 8px;
 }
 
 .lobby-hint {
     color: #555;
     font-size: 0.75rem;
+    margin-top: 8px;
 }
 
 .room-code-text {
@@ -570,6 +560,7 @@ div[id^="ol-active-traits"] {
     background: #0d0d14;
     user-select: all;
     cursor: pointer;
+    margin: 12px 0;
 }
 
 .code-input {
@@ -581,10 +572,12 @@ div[id^="ol-active-traits"] {
     text-align: center;
     letter-spacing: 0.5rem;
     padding: 10px 16px;
-    width: 200px;
+    width: 240px;
+    max-width: 100%;
     text-transform: uppercase;
     outline: none;
     transition: border-color 0.2s;
+    margin-top: 8px;
 }
 
 .code-input:focus {
@@ -592,11 +585,11 @@ div[id^="ol-active-traits"] {
 }
 
 .lobby-status {
-    margin-top: 20px;
-    padding: 12px 24px;
+    margin-top: 16px;
+    padding: 10px 20px;
     border: 1px solid #333;
     color: #aaa;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-align: center;
 }
 
@@ -726,44 +719,23 @@ div[id^="ol-active-traits"] {
         margin-top: 2px;
     }
 
-    /* --- 在线大厅（弹窗模式） --- */
-    #online-lobby-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.97);
-        z-index: 100;
-        padding: 40px 16px 24px;
-        overflow-y: auto;
-        justify-content: flex-start;
-    }
-    .lobby-title {
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-    .lobby-options {
-        flex-direction: column;
-        gap: 20px;
-        width: 100%;
-        max-width: 300px;
-    }
-    .lobby-section {
+    /* --- 在线房间弹窗 --- */
+    .lobby-modal {
         min-width: unset;
-        width: 100%;
+        width: 85vw;
+        max-width: 320px;
+        padding: 20px 16px;
     }
-    .lobby-divider {
-        text-align: center;
-    }
-    .code-input {
-        width: 100%;
-        max-width: 240px;
+    .lobby-modal-title {
+        font-size: 1.3rem;
     }
     .room-code-text {
         font-size: 1.8rem;
         letter-spacing: 0.5rem;
         padding: 8px 12px;
+    }
+    .code-input {
+        width: 100%;
     }
 
     /* --- 在线对战：画中画对手 --- */

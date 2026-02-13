@@ -199,8 +199,9 @@ class UIManager {
             start: document.getElementById('start-screen'),
             game: document.getElementById('game-screen'),
             pkGame: document.getElementById('pk-game-screen'),
-            onlineLobby: document.getElementById('online-lobby-screen'),
             onlineGame: document.getElementById('online-game-screen'),
+            createRoomModal: document.getElementById('create-room-modal'),
+            joinRoomModal: document.getElementById('join-room-modal'),
             trait: document.getElementById('trait-screen'),
             pause: document.getElementById('pause-screen'),
             gameover: document.getElementById('gameover-screen'),
@@ -214,13 +215,11 @@ class UIManager {
         this.screens.start.classList.add('hidden');
         this.screens.game.classList.add('hidden');
         this.screens.pkGame.classList.add('hidden');
-        if (this.screens.onlineLobby) this.screens.onlineLobby.classList.add('hidden');
         if (this.screens.onlineGame) this.screens.onlineGame.classList.add('hidden');
 
         if (name === 'start') this.screens.start.classList.remove('hidden');
         else if (name === 'game') this.screens.game.classList.remove('hidden');
         else if (name === 'pk-game') this.screens.pkGame.classList.remove('hidden');
-        else if (name === 'online-lobby') this.screens.onlineLobby.classList.remove('hidden');
         else if (name === 'online-game') this.screens.onlineGame.classList.remove('hidden');
     }
 
@@ -233,7 +232,7 @@ class UIManager {
     }
 
     hideAllOverlays() {
-        ['trait', 'pause', 'gameover', 'pkGameover', 'onlineGameover', 'onlineDisconnect'].forEach(name => {
+        ['trait', 'pause', 'gameover', 'pkGameover', 'onlineGameover', 'onlineDisconnect', 'createRoomModal', 'joinRoomModal'].forEach(name => {
             if (this.screens[name]) this.screens[name].classList.add('hidden');
         });
         // Hide per-player PK trait overlays
@@ -317,8 +316,10 @@ class UIManager {
 
     // --- Online mode UI ---
 
-    showLobbyStatus(text, type) {
-        const el = document.getElementById('lobby-status');
+    showLobbyStatus(text, type, target) {
+        const id = target === 'join' ? 'join-room-status' : 'create-room-status';
+        const el = document.getElementById(id);
+        if (!el) return;
         el.textContent = text;
         el.className = 'lobby-status';
         if (type) el.classList.add(type);
@@ -326,8 +327,10 @@ class UIManager {
     }
 
     hideLobbyStatus() {
-        const el = document.getElementById('lobby-status');
-        el.classList.add('hidden');
+        ['create-room-status', 'join-room-status'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        });
     }
 
     showRoomCode(code) {
