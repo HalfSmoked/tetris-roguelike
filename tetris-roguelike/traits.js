@@ -37,7 +37,7 @@ const ALL_TRAITS = [
         icon: '🔨',
         type: TRAIT_TYPES.ATTACK,
         typeName: '攻击',
-        desc: '落地时填满正下方整列空格（PK：给对手添加2个随机方块）',
+        desc: '每次落地给对手添加2个随机方块（仅对战生效）',
         apply(game) {
             game.crusher = true;
         }

@@ -297,27 +297,9 @@ class TetrisGame {
         if (!this.current) return;
         const shape = this.current.shape;
 
-        // Crusher trait: 单人填满落点正下方整列方块，PK给对手加2个随机方块
-        if (this.crusher) {
-            if (this.opponent) {
-                this.opponent.addRandomBlocks(2);
-            } else {
-                // 找到方块最中心的列，填满该列从落点往下的所有空格
-                const centerC = Math.floor(shape[0].length / 2);
-                let bottomR = -1;
-                for (let r = shape.length - 1; r >= 0; r--) {
-                    if (shape[r][centerC]) { bottomR = r; break; }
-                }
-                if (bottomR !== -1) {
-                    const boardX = this.current.x + centerC;
-                    const fillColor = this.current.color;
-                    for (let r = this.current.y + bottomR + 1; r < this.rows; r++) {
-                        if (boardX >= 0 && boardX < this.cols && !this.board[r][boardX]) {
-                            this.board[r][boardX] = fillColor;
-                        }
-                    }
-                }
-            }
+        // Crusher trait: PK/在线时给对手加2个随机方块
+        if (this.crusher && this.opponent) {
+            this.opponent.addRandomBlocks(2);
         }
 
         // Place piece on board
