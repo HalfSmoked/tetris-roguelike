@@ -298,11 +298,7 @@ function handleSingleKeyDown(e) {
             break;
     }
 
-    if (e.code === 'ArrowDown') {
-        if (!game.paused && !game.traitPending) game.hardDrop();
-    }
-
-    if (['ArrowLeft', 'ArrowRight'].includes(e.code)) {
+    if (['ArrowLeft', 'ArrowRight', 'ArrowDown'].includes(e.code)) {
         executeSingleKeyAction(e.code);
         keyTimers[e.code] = { start: performance.now(), repeating: false };
     }
@@ -313,11 +309,12 @@ function executeSingleKeyAction(code) {
     switch (code) {
         case 'ArrowLeft': game.move(-1); break;
         case 'ArrowRight': game.move(1); break;
+        case 'ArrowDown': game.softDrop(); break;
     }
 }
 
 function processSingleHeldKeys(time) {
-    for (const code of ['ArrowLeft', 'ArrowRight']) {
+    for (const code of ['ArrowLeft', 'ArrowRight', 'ArrowDown']) {
         if (!keys[code] || !keyTimers[code]) continue;
         const timer = keyTimers[code];
         const elapsed = time - timer.start;
@@ -339,15 +336,15 @@ function processSingleHeldKeys(time) {
 // P2: Arrows + Numpad0 + NumpadDecimal
 const P1_MAP = {
     'KeyA': 'left', 'KeyD': 'right', 'KeyW': 'rotate',
-    'KeyS': 'hardDrop', 'Space': 'hardDrop', 'ShiftLeft': 'hold'
+    'KeyS': 'softDrop', 'Space': 'hardDrop', 'ShiftLeft': 'hold'
 };
 const P2_MAP = {
     'ArrowLeft': 'left', 'ArrowRight': 'right', 'ArrowUp': 'rotate',
-    'ArrowDown': 'hardDrop', 'Numpad0': 'hold', 'NumpadDecimal': 'hold'
+    'ArrowDown': 'softDrop', 'Numpad0': 'hold', 'NumpadDecimal': 'hold'
 };
 
-const P1_REPEAT_KEYS = ['KeyA', 'KeyD'];
-const P2_REPEAT_KEYS = ['ArrowLeft', 'ArrowRight'];
+const P1_REPEAT_KEYS = ['KeyA', 'KeyD', 'KeyS'];
+const P2_REPEAT_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowDown'];
 
 function handlePKKeyDown(e) {
     const allPKKeys = [...Object.keys(P1_MAP), ...Object.keys(P2_MAP), 'KeyP'];
@@ -389,6 +386,7 @@ function executePKAction(g, ts, action) {
         case 'left': g.move(-1); break;
         case 'right': g.move(1); break;
         case 'rotate': g.rotate(1); break;
+        case 'softDrop': g.softDrop(); break;
         case 'hardDrop': g.hardDrop(); break;
         case 'hold':
             g.hold();
@@ -705,7 +703,6 @@ function handleOnlineKeyDown(e) {
             if (!localGame.paused && !localGame.traitPending) localGame.rotate(1);
             break;
         case 'Space':
-        case 'ArrowDown':
             if (!localGame.paused && !localGame.traitPending) localGame.hardDrop();
             break;
         case 'KeyC':
@@ -720,7 +717,7 @@ function handleOnlineKeyDown(e) {
             break;
     }
 
-    if (['ArrowLeft', 'ArrowRight'].includes(e.code)) {
+    if (['ArrowLeft', 'ArrowRight', 'ArrowDown'].includes(e.code)) {
         executeOnlineKeyAction(e.code);
         keyTimers[e.code] = { start: performance.now(), repeating: false };
     }
@@ -731,11 +728,12 @@ function executeOnlineKeyAction(code) {
     switch (code) {
         case 'ArrowLeft': localGame.move(-1); break;
         case 'ArrowRight': localGame.move(1); break;
+        case 'ArrowDown': localGame.softDrop(); break;
     }
 }
 
 function processOnlineHeldKeys(time) {
-    for (const code of ['ArrowLeft', 'ArrowRight']) {
+    for (const code of ['ArrowLeft', 'ArrowRight', 'ArrowDown']) {
         if (!keys[code] || !keyTimers[code]) continue;
         const timer = keyTimers[code];
         const elapsed = time - timer.start;
