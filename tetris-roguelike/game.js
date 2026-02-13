@@ -29,6 +29,8 @@ class TetrisGame {
         this.totalLinesForTrait = 0;
         this.linesUntilTrait = 10;
         this.gameOver = false;
+        this.gameWon = false;
+        this.winScore = 100000;
         this.paused = false;
         this.traitPending = false;
 
@@ -109,6 +111,10 @@ class TetrisGame {
             }
         }
         this.updateGhost();
+    }
+
+    expandBoard(extra) {
+        this.resizeBoard(this.cols + extra);
     }
 
     // 7-bag randomizer
@@ -291,12 +297,12 @@ class TetrisGame {
         if (!this.current) return;
         const shape = this.current.shape;
 
-        // Crusher trait: 单人清除落点下方整列方块（打通道），PK给对手加2个随机方块
+        // Crusher trait: 单人填满落点正下方整列方块，PK给对手加2个随机方块
         if (this.crusher) {
             if (this.opponent) {
                 this.opponent.addRandomBlocks(2);
             } else {
-                // 找到方块最中心的列，清除该列从落点往下的所有方块
+                // 找到方块最中心的列，填满该列从落点往下的所有空格
                 const centerC = Math.floor(shape[0].length / 2);
                 let bottomR = -1;
                 for (let r = shape.length - 1; r >= 0; r--) {
@@ -304,9 +310,10 @@ class TetrisGame {
                 }
                 if (bottomR !== -1) {
                     const boardX = this.current.x + centerC;
+                    const fillColor = this.current.color;
                     for (let r = this.current.y + bottomR + 1; r < this.rows; r++) {
-                        if (boardX >= 0 && boardX < this.cols) {
-                            this.board[r][boardX] = null;
+                        if (boardX >= 0 && boardX < this.cols && !this.board[r][boardX]) {
+                            this.board[r][boardX] = fillColor;
                         }
                     }
                 }
@@ -378,6 +385,15 @@ class TetrisGame {
 
         if (this.onScoreChange) this.onScoreChange();
         if (this.onLinesClear) this.onLinesClear(count);
+        this.checkWin();
+    }
+
+    checkWin() {
+        if (!this.gameWon && this.score >= this.winScore) {
+            this.gameWon = true;
+            this.gameOver = true;
+            if (this.onGameWin) this.onGameWin();
+        }
     }
 
     // 清除最底部有方块的一行

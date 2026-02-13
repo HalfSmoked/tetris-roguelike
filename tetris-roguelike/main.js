@@ -95,6 +95,7 @@ function startSingleGame() {
 
     game.onTraitReady = showTraitSelection;
     game.onGameOver = showSingleGameOver;
+    game.onGameWin = () => showSingleGameOver(true);
     game.onScoreChange = () => renderer && renderer.updateStats();
 
     ui.showScreen('game');
@@ -135,10 +136,10 @@ function showTraitSelection() {
     });
 }
 
-function showSingleGameOver() {
+function showSingleGameOver(won = false) {
     if (animationId) cancelAnimationFrame(animationId);
     renderer.render();
-    ui.showGameOver(game.score, game.lines, game.level, traitSystem.activeTraits);
+    ui.showGameOver(game.score, game.lines, game.level, traitSystem.activeTraits, won);
 }
 
 // ===================== PK MODE =====================
@@ -162,6 +163,8 @@ function startPKGame() {
 
     game1.onGameOver = () => handlePKGameOver(2);
     game2.onGameOver = () => handlePKGameOver(1);
+    game1.onGameWin = () => handlePKGameOver(1);
+    game2.onGameWin = () => handlePKGameOver(2);
 
     game1.onScoreChange = () => renderer1 && renderer1.updateStats();
     game2.onScoreChange = () => renderer2 && renderer2.updateStats();
@@ -540,6 +543,7 @@ function setupNetworkCallbacks() {
         if (!localGame) return;
         if (action === 'addGarbageRow') localGame.addGarbageRow();
         if (action === 'addRandomBlocks') localGame.addRandomBlocks(args[0]);
+        if (action === 'expandBoard') localGame.expandBoard(args[0]);
     };
 
     networkManager.onOpponentGameOver = () => {
@@ -578,6 +582,9 @@ function startOnlineGame() {
         },
         addRandomBlocks(count) {
             if (networkManager) networkManager.sendAttack('addRandomBlocks', [count]);
+        },
+        expandBoard(extra) {
+            if (networkManager) networkManager.sendAttack('expandBoard', [extra]);
         }
     };
 
@@ -587,11 +594,20 @@ function startOnlineGame() {
     };
 
     localGame.onGameOver = () => {
+        if (localGame.gameWon) return; // win handled by onGameWin
         if (networkManager) {
             networkManager.sendGameOver();
             networkManager.stopStateSync();
         }
         handleOnlineGameOver(false);
+    };
+
+    localGame.onGameWin = () => {
+        if (networkManager) {
+            networkManager.sendGameOver(); // tell opponent we finished (they lose)
+            networkManager.stopStateSync();
+        }
+        handleOnlineGameOver(true);
     };
 
     localGame.onScoreChange = () => localRenderer && localRenderer.updateStats();

@@ -268,7 +268,10 @@ class UIManager {
         });
     }
 
-    showGameOver(score, lines, level, traits) {
+    showGameOver(score, lines, level, traits, won = false) {
+        const titleEl = document.getElementById('gameover-title');
+        if (titleEl) titleEl.textContent = won ? '胜利！' : '游戏结束';
+
         document.getElementById('final-score').textContent = Math.floor(score);
         document.getElementById('final-lines').textContent = lines;
         document.getElementById('final-level').textContent = level;

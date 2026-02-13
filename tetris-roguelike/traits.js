@@ -37,7 +37,7 @@ const ALL_TRAITS = [
         icon: '🔨',
         type: TRAIT_TYPES.ATTACK,
         typeName: '攻击',
-        desc: '落地时清除正下方整列方块（PK：给对手添加2个随机方块）',
+        desc: '落地时填满正下方整列空格（PK：给对手添加2个随机方块）',
         apply(game) {
             game.crusher = true;
         }
@@ -56,13 +56,17 @@ const ALL_TRAITS = [
     },
     {
         id: 'extra_space',
-        name: '额外空间',
+        name: '空间膨胀',
         icon: '↔️',
-        type: TRAIT_TYPES.DEFENSE,
-        typeName: '防御',
-        desc: '棋盘宽度+2列',
+        type: TRAIT_TYPES.ATTACK,
+        typeName: '攻击',
+        desc: '自己棋盘+2列更易消行（PK：给对手棋盘+2列增加难度）',
         apply(game) {
-            game.resizeBoard(game.cols + 2);
+            if (game.opponent) {
+                game.opponent.expandBoard(2);
+            } else {
+                game.resizeBoard(game.cols + 2);
+            }
         }
     },
     {
